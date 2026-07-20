@@ -1,0 +1,24 @@
+# profiles.yml examples for different warehouses
+
+multi_tenant_target:
+  target: dev
+  outputs:
+    # Databricks
+    dev_databricks:
+      type: databricks
+      catalog: your_catalog
+      schema: dev_{{ env_var('USER') }}
+      host: your-databricks-host
+      http_path: your-http-path
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
+      threads: 4
+
+    # BigQuery (as before)
+    dev_bigquery:
+      type: bigquery
+      method: service-account
+      project: your-project
+      dataset: dev_dataset
+      threads: 4
+
+    # Add Snowflake, Redshift similarly...
