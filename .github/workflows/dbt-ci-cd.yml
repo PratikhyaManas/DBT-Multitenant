@@ -1,0 +1,42 @@
+name: dbt Multi-Tenant CI/CD - Optimized with Test Splitting
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dbt-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tenant: [tenant_a, tenant_b, tenant_c]
+      max-parallel: 3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python + Cache
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install & deps
+        run: |
+          pip install dbt-core dbt-bigquery dbt-snowflake dbt-databricks
+          dbt deps
+
+      - name: Build
+        run: dbt build --vars '{"tenant_name": "${{ matrix.tenant }}"}' --target dev --threads 4
+
+      - name: Split Tests (Singular)
+        run: dbt test --vars '{"tenant_name": "${{ matrix.tenant }}"}' --select "test_type:singular" --threads 8
+
+      - name: Split Tests (Generic)
+        run: dbt test --vars '{"tenant_name": "${{ matrix.tenant }}"}' --select "test_type:generic" --threads 8
