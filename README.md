@@ -125,7 +125,7 @@ The project now includes KPI feature-layer marts:
 Build only KPI features for a tenant:
 
 ```bash
-dbt run --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select tag:kpi
+dbt run --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --selector kpi_features
 ```
 
 Test only KPI features:
@@ -184,8 +184,10 @@ Contracts are enforced on:
 Validate contracts during build:
 
 ```bash
-dbt build --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select kpi_executive_scorecard semantic_business_metrics
+dbt build --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --selector contract_gate
 ```
+
+Reusable model selectors are defined in `selectors.yml`.
 
 ## End-to-end sample data engineering flow (HR, Finance, Marketing)
 

@@ -11,10 +11,7 @@
     "files.associations": {
         "models/**/*.sql": "jinja-sql",
         "macros/**/*.sql": "jinja-sql",
-        "tests/**/*.sql": "jinja-sql",
-        "**/models/**/*.sql": "jinja-sql",
-        "**/macros/**/*.sql": "jinja-sql",
-        "**/tests/**/*.sql": "jinja-sql"
+        "tests/**/*.sql": "jinja-sql"
     },
     "mssql.intelliSense.enableErrorChecking": false,
     "sql.validate.enable": false

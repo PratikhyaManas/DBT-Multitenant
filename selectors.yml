@@ -1,0 +1,42 @@
+selectors:
+  - name: contract_gate
+    description: Contract-protected models that must pass before merge.
+    definition:
+      union:
+        - method: fqn
+          value: kpi_executive_scorecard
+        - method: fqn
+          value: semantic_business_metrics
+
+  - name: kpi_features
+    description: All KPI feature-layer models.
+    definition:
+      method: tag
+      value: kpi
+
+  - name: semantic_layer
+    description: BI semantic layer models.
+    definition:
+      union:
+        - method: tag
+          value: semantic
+        - method: fqn
+          value: semantic_business_metrics
+
+  - name: finance_domain
+    description: Finance mart domain.
+    definition:
+      method: path
+      value: models/marts/finance
+
+  - name: hr_domain
+    description: HR mart domain.
+    definition:
+      method: path
+      value: models/marts/hr
+
+  - name: marketing_domain
+    description: Marketing mart domain.
+    definition:
+      method: path
+      value: models/marts/marketing

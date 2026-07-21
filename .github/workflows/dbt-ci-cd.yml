@@ -10,6 +10,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  DBT_PROFILES_DIR: profiles
+  DBT_TARGET: dev_databricks
+
 jobs:
   contract-gate:
     name: Contract Gate (PR)
@@ -28,11 +32,11 @@ jobs:
       - name: Install & deps
         run: |
           pip install dbt-core dbt-bigquery dbt-snowflake dbt-databricks
-          dbt deps --profiles-dir profiles
+          dbt deps --profiles-dir $DBT_PROFILES_DIR
 
       - name: Contract Build Gate
         run: >-
-          dbt build --profiles-dir profiles --target dev_databricks --vars "{\"tenant_name\": \"tenant_a\"}" --select kpi_executive_scorecard semantic_business_metrics
+          dbt build --profiles-dir $DBT_PROFILES_DIR --target $DBT_TARGET --vars "{\"tenant_name\": \"tenant_a\"}" --selector contract_gate
 
   dbt-matrix:
     runs-on: ubuntu-latest
@@ -53,19 +57,19 @@ jobs:
       - name: Install & deps
         run: |
           pip install dbt-core dbt-bigquery dbt-snowflake dbt-databricks
-          dbt deps --profiles-dir profiles
+          dbt deps --profiles-dir $DBT_PROFILES_DIR
 
       - name: Parse
-        run: dbt parse --profiles-dir profiles --target dev_databricks
+        run: dbt parse --profiles-dir $DBT_PROFILES_DIR --target $DBT_TARGET
 
       - name: Build
         run: >-
-          dbt build --profiles-dir profiles --vars "{\"tenant_name\": \"${{ matrix.tenant }}\"}" --target dev_databricks --threads 4
+          dbt build --profiles-dir $DBT_PROFILES_DIR --vars "{\"tenant_name\": \"${{ matrix.tenant }}\"}" --target $DBT_TARGET --threads 4
 
       - name: Split Tests (Singular)
         run: >-
-          dbt test --profiles-dir profiles --vars "{\"tenant_name\": \"${{ matrix.tenant }}\"}" --target dev_databricks --select "test_type:singular" --threads 8
+          dbt test --profiles-dir $DBT_PROFILES_DIR --vars "{\"tenant_name\": \"${{ matrix.tenant }}\"}" --target $DBT_TARGET --select "test_type:singular" --threads 8
 
       - name: Split Tests (Generic)
         run: >-
-          dbt test --profiles-dir profiles --vars "{\"tenant_name\": \"${{ matrix.tenant }}\"}" --target dev_databricks --select "test_type:generic" --threads 8
+          dbt test --profiles-dir $DBT_PROFILES_DIR --vars "{\"tenant_name\": \"${{ matrix.tenant }}\"}" --target $DBT_TARGET --select "test_type:generic" --threads 8
