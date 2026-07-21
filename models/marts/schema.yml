@@ -1,0 +1,85 @@
+version: 2
+
+models:
+  - name: fact_orders
+    description: Tenant-filtered order fact table.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - tenant_id
+              - order_id
+      - no_cross_tenant_leakage
+    columns:
+      - name: order_id
+        tests: [not_null]
+      - name: tenant_id
+        tests: [not_null]
+      - name: order_date
+        tests: [not_null]
+      - name: amount
+        tests: [not_null]
+
+  - name: fact_revenue
+    description: Monthly revenue aggregate per tenant.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - tenant_id
+              - revenue_month
+      - no_cross_tenant_leakage
+      - positive_revenue_only:
+          arguments:
+            revenue_column: total_revenue
+    columns:
+      - name: tenant_id
+        tests: [not_null]
+      - name: revenue_month
+        tests: [not_null]
+      - name: total_revenue
+        tests: [not_null]
+      - name: unique_customers
+        tests: [not_null]
+
+  - name: employee_matrix
+    description: Employee level dimension-like table by tenant.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - tenant_id
+              - employee_id
+      - no_cross_tenant_leakage
+    columns:
+      - name: employee_id
+        tests: [not_null]
+      - name: tenant_id
+        tests: [not_null]
+      - name: performance_score
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                max_value: 5
+                inclusive: true
+
+  - name: dim_campaigns
+    description: Campaign dimension by tenant.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - tenant_id
+              - campaign_id
+      - no_cross_tenant_leakage
+    columns:
+      - name: campaign_id
+        tests: [not_null]
+      - name: tenant_id
+        tests: [not_null]
+      - name: channel
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['email', 'social', 'search', 'display', 'affiliate', 'direct']

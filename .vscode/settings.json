@@ -1,0 +1,16 @@
+{
+    "chat.agentSkillsLocations": {
+        ".agents/skills": true,
+        ".github/skills": true,
+        ".claude/skills": true,
+        "~/.agents/skills": true,
+        "~/.copilot/skills": true,
+        "~/.claude/skills": true,
+        "~/.vscode/extensions/synapsevscode.synapse-1.25.0/copilot/skills": true
+    },
+    "files.associations": {
+        "models/**/*.sql": "jinja-sql",
+        "macros/**/*.sql": "jinja-sql",
+        "tests/**/*.sql": "jinja-sql"
+    }
+}

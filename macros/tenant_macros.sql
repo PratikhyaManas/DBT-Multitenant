@@ -1,11 +1,11 @@
 {% macro tenant_filter() %}
-  {% set tenant = var('tenant_name', 'default') | string %}
+  {% set tenant = var('tenant_name', 'default') | trim | string %}
   tenant_id = '{{ tenant }}'
 {% endmacro %}
 
 {% macro get_tenant_schema(base_schema=none, tenant_name=none) %}
   {% set base = base_schema or target.schema %}
-  {% set tenant = tenant_name or var('tenant_name', 'default') | lower | replace(' ', '_') %}
+  {% set tenant = tenant_name or var('tenant_name', 'default') | lower | replace(' ', '_') | trim %}
   {{ base }}_{{ tenant }}
 {% endmacro %}
 

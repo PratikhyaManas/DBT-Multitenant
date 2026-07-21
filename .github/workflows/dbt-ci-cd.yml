@@ -30,13 +30,19 @@ jobs:
       - name: Install & deps
         run: |
           pip install dbt-core dbt-bigquery dbt-snowflake dbt-databricks
-          dbt deps
+          dbt deps --profiles-dir profiles
+
+      - name: Parse
+        run: dbt parse --profiles-dir profiles --target dev_databricks
 
       - name: Build
-        run: dbt build --vars '{"tenant_name": "${{ matrix.tenant }}"}' --target dev --threads 4
+        run: >-
+          dbt build --profiles-dir profiles --vars "{\"tenant_name\": \"${{ matrix.tenant }}\"}" --target dev_databricks --threads 4
 
       - name: Split Tests (Singular)
-        run: dbt test --vars '{"tenant_name": "${{ matrix.tenant }}"}' --select "test_type:singular" --threads 8
+        run: >-
+          dbt test --profiles-dir profiles --vars "{\"tenant_name\": \"${{ matrix.tenant }}\"}" --target dev_databricks --select "test_type:singular" --threads 8
 
       - name: Split Tests (Generic)
-        run: dbt test --vars '{"tenant_name": "${{ matrix.tenant }}"}' --select "test_type:generic" --threads 8
+        run: >-
+          dbt test --profiles-dir profiles --vars "{\"tenant_name\": \"${{ matrix.tenant }}\"}" --target dev_databricks --select "test_type:generic" --threads 8

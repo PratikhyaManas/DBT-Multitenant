@@ -1,0 +1,30 @@
+name: dbt_multitenant
+version: 1.0.0
+config-version: 2
+
+profile: multi_tenant_target
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+  - "logs"
+
+vars:
+  tenant_name: default
+
+models:
+  dbt_multitenant:
+    +on_schema_change: sync_all_columns
+    marts:
+      +materialized: table
+      shared:
+        +tags: ["shared"]
+      finance:
+        +tags: ["finance"]
+      hr:
+        +tags: ["hr"]
+      marketing:
+        +tags: ["marketing"]

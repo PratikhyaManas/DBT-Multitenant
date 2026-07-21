@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw source tables shared across tenants.
+    tables:
+      - name: orders
+        description: Tenant-scoped order level records.
+        columns:
+          - name: order_id
+            tests: [not_null]
+          - name: tenant_id
+            tests: [not_null]
+      - name: employees
+        description: Tenant-scoped employee roster records.
+        columns:
+          - name: employee_id
+            tests: [not_null]
+          - name: tenant_id
+            tests: [not_null]
+      - name: campaigns
+        description: Tenant-scoped campaign attributes.
+        columns:
+          - name: campaign_id
+            tests: [not_null]
+          - name: tenant_id
+            tests: [not_null]
+          - name: channel
+            tests:
+              - accepted_values:
+                  arguments:
+                    values: ['email', 'social', 'search', 'display', 'affiliate', 'direct']

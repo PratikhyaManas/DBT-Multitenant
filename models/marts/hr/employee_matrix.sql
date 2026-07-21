@@ -15,5 +15,5 @@ SELECT
 FROM {{ source('raw', 'employees') }}
 WHERE {{ tenant_filter() }}
 {% if is_incremental() %}
-  AND hire_date >= (SELECT MAX(hire_date) FROM {{ this }})
+  AND hire_date >= dateadd(day, -30, current_date())
 {% endif %}
