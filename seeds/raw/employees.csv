@@ -1,0 +1,9 @@
+employee_id,tenant_id,department,hire_date,salary,performance_score,updated_at
+3001,tenant_a,Engineering,2024-01-15,94000,4.6,2026-07-01
+3002,tenant_a,Finance,2023-10-04,88000,4.2,2026-07-01
+3003,tenant_a,HR,2025-03-18,72000,3.9,2026-07-01
+3004,tenant_a,Marketing,2024-11-22,76000,4.4,2026-07-01
+4001,tenant_b,Engineering,2023-06-10,99000,4.8,2026-07-01
+4002,tenant_b,Finance,2024-08-03,86000,4.1,2026-07-01
+4003,tenant_b,HR,2025-02-12,69000,3.7,2026-07-01
+4004,tenant_b,Marketing,2024-09-01,75000,4.0,2026-07-01

@@ -1,0 +1,9 @@
+campaign_id,tenant_id,campaign_name,channel,start_date,budget,updated_at
+7001,tenant_a,Q2 Retargeting,display,2026-04-01,40000,2026-06-30
+7002,tenant_a,Search Expansion,search,2026-05-15,55000,2026-06-30
+7003,tenant_a,Social Awareness,social,2026-06-01,30000,2026-06-30
+7004,tenant_a,Email Nurture,email,2026-06-20,15000,2026-06-30
+8001,tenant_b,Q2 Retargeting,display,2026-04-01,35000,2026-06-30
+8002,tenant_b,Affiliate Push,affiliate,2026-05-12,28000,2026-06-30
+8003,tenant_b,Brand Search,search,2026-06-05,42000,2026-06-30
+8004,tenant_b,Direct Offer,direct,2026-06-25,20000,2026-06-30

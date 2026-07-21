@@ -6,6 +6,7 @@ profile: multi_tenant_target
 
 model-paths: ["models"]
 macro-paths: ["macros"]
+seed-paths: ["seeds"]
 target-path: "target"
 clean-targets:
   - "target"
@@ -28,3 +29,9 @@ models:
         +tags: ["hr"]
       marketing:
         +tags: ["marketing"]
+
+seeds:
+  dbt_multitenant:
+    +quote_columns: false
+    raw:
+      +schema: raw

@@ -111,3 +111,36 @@ dbt build --profiles-dir profiles --target dev_databricks --vars '{"tenant_name"
 
 - `no_cross_tenant_leakage`: fails if a model returns rows outside `var('tenant_name')`
 - `positive_revenue_only`: fails if revenue in `fact_revenue.total_revenue` is less than or equal to zero
+
+## End-to-end sample data engineering flow (HR, Finance, Marketing)
+
+The repository includes sample raw inputs as seeds:
+
+- `seeds/raw/orders.csv`
+- `seeds/raw/employees.csv`
+- `seeds/raw/campaigns.csv`
+
+These are materialized into the `raw` schema so existing source references continue to work.
+
+Run the complete demo pipeline for a tenant:
+
+```bash
+dbt deps --profiles-dir profiles
+dbt seed --profiles-dir profiles --target dev_databricks --full-refresh
+dbt build --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}'
+```
+
+Run each mart domain explicitly:
+
+```bash
+dbt run --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select marts.hr+
+dbt run --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select marts.finance+
+dbt run --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select marts.marketing+
+```
+
+Run tenant-scoped tests after build:
+
+```bash
+dbt test --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select test_type:generic
+dbt test --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select test_type:singular
+```

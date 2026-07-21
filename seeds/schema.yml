@@ -1,0 +1,32 @@
+version: 2
+
+seeds:
+  - name: orders
+    description: Sample raw orders input for end-to-end demo.
+    columns:
+      - name: order_id
+        tests: [not_null]
+      - name: tenant_id
+        tests: [not_null]
+      - name: amount
+        tests: [not_null]
+
+  - name: employees
+    description: Sample raw employees input for end-to-end demo.
+    columns:
+      - name: employee_id
+        tests: [not_null]
+      - name: tenant_id
+        tests: [not_null]
+      - name: performance_score
+        tests: [not_null]
+
+  - name: campaigns
+    description: Sample raw campaigns input for end-to-end demo.
+    columns:
+      - name: campaign_id
+        tests: [not_null]
+      - name: tenant_id
+        tests: [not_null]
+      - name: channel
+        tests: [not_null]
