@@ -112,6 +112,81 @@ dbt build --profiles-dir profiles --target dev_databricks --vars '{"tenant_name"
 - `no_cross_tenant_leakage`: fails if a model returns rows outside `var('tenant_name')`
 - `positive_revenue_only`: fails if revenue in `fact_revenue.total_revenue` is less than or equal to zero
 
+## Additional feature models
+
+The project now includes KPI feature-layer marts:
+
+- Finance: `kpi_finance_monthly` (revenue per customer, month-over-month growth)
+- HR: `kpi_hr_workforce` (headcount, average salary/performance by department)
+- Marketing: `kpi_marketing_channel` (campaign count and budget by channel)
+- Cross-domain: `kpi_executive_scorecard` (finance + hr + marketing executive view)
+- Semantic BI: `semantic_business_metrics` (standardized KPI naming for BI tools)
+
+Build only KPI features for a tenant:
+
+```bash
+dbt run --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select tag:kpi
+```
+
+Test only KPI features:
+
+```bash
+dbt test --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select kpi_finance_monthly kpi_hr_workforce kpi_marketing_channel
+```
+
+Build executive scorecard only:
+
+```bash
+dbt run --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select kpi_executive_scorecard
+```
+
+Test executive scorecard only:
+
+```bash
+dbt test --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select kpi_executive_scorecard
+```
+
+Build semantic BI mart only:
+
+```bash
+dbt run --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select semantic_business_metrics
+```
+
+Test semantic BI mart only:
+
+```bash
+dbt test --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select semantic_business_metrics
+```
+
+## BI exposures and lineage
+
+Dashboard/report exposures are defined in `models/exposures.yml` for:
+
+- Executive KPI dashboard
+- Finance monthly report
+- HR workforce report
+- Marketing channel dashboard
+
+Generate lineage docs including exposures:
+
+```bash
+dbt docs generate --profiles-dir profiles --target dev_databricks
+dbt docs serve --profiles-dir profiles --target dev_databricks
+```
+
+## Data contracts
+
+Contracts are enforced on:
+
+- `kpi_executive_scorecard`
+- `semantic_business_metrics`
+
+Validate contracts during build:
+
+```bash
+dbt build --profiles-dir profiles --target dev_databricks --vars '{"tenant_name": "tenant_a"}' --select kpi_executive_scorecard semantic_business_metrics
+```
+
 ## End-to-end sample data engineering flow (HR, Finance, Marketing)
 
 The repository includes sample raw inputs as seeds:

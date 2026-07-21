@@ -83,3 +83,193 @@ models:
           - accepted_values:
               arguments:
                 values: ['email', 'social', 'search', 'display', 'affiliate', 'direct']
+
+  - name: kpi_finance_monthly
+    description: Monthly finance KPI layer per tenant.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - tenant_id
+              - revenue_month
+      - no_cross_tenant_leakage
+    columns:
+      - name: tenant_id
+        tests: [not_null]
+      - name: revenue_month
+        tests: [not_null]
+      - name: total_revenue
+        tests: [not_null]
+      - name: revenue_per_customer
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+
+  - name: kpi_hr_workforce
+    description: Department-level workforce KPIs per tenant.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - tenant_id
+              - department
+      - no_cross_tenant_leakage
+    columns:
+      - name: tenant_id
+        tests: [not_null]
+      - name: department
+        tests: [not_null]
+      - name: headcount
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                inclusive: true
+      - name: avg_salary
+        tests: [not_null]
+
+  - name: kpi_marketing_channel
+    description: Channel-level marketing KPIs per tenant.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - tenant_id
+              - channel
+      - no_cross_tenant_leakage
+    columns:
+      - name: tenant_id
+        tests: [not_null]
+      - name: channel
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['email', 'social', 'search', 'display', 'affiliate', 'direct']
+      - name: campaigns_count
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                inclusive: true
+      - name: total_budget
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+
+  - name: kpi_executive_scorecard
+    description: Cross-domain executive KPI scorecard combining finance, HR, and marketing.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - tenant_id
+              - revenue_month
+      - no_cross_tenant_leakage
+    columns:
+      - name: tenant_id
+        data_type: string
+        tests: [not_null]
+      - name: revenue_month
+        data_type: date
+        tests: [not_null]
+      - name: total_revenue
+        data_type: double
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: total_headcount
+        data_type: bigint
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                inclusive: true
+      - name: total_marketing_budget
+        data_type: double
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: revenue_per_customer
+        data_type: double
+      - name: mom_revenue_growth
+        data_type: double
+      - name: unique_customers
+        data_type: bigint
+      - name: avg_salary_all_departments
+        data_type: double
+      - name: avg_performance_all_departments
+        data_type: double
+      - name: total_campaigns
+        data_type: bigint
+      - name: avg_campaign_budget
+        data_type: double
+      - name: revenue_to_marketing_spend_ratio
+        data_type: double
+      - name: revenue_per_employee
+        data_type: double
+
+  - name: semantic_business_metrics
+    description: BI-ready semantic mart with standardized KPI names for reporting tools.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - tenant_key
+              - metric_month
+    columns:
+      - name: tenant_key
+        data_type: string
+        tests: [not_null]
+      - name: metric_month
+        data_type: date
+        tests: [not_null]
+      - name: finance_total_revenue
+        data_type: double
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: hr_total_headcount
+        data_type: bigint
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                inclusive: true
+      - name: marketing_total_budget
+        data_type: double
+        tests:
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+      - name: finance_revenue_per_customer
+        data_type: double
+      - name: finance_mom_revenue_growth
+        data_type: double
+      - name: finance_unique_customers
+        data_type: bigint
+      - name: hr_avg_salary
+        data_type: double
+      - name: hr_avg_performance
+        data_type: double
+      - name: marketing_total_campaigns
+        data_type: bigint
+      - name: marketing_avg_campaign_budget
+        data_type: double
+      - name: efficiency_revenue_to_marketing_ratio
+        data_type: double
+      - name: efficiency_revenue_per_employee
+        data_type: double

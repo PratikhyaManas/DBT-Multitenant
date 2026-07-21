@@ -1,0 +1,56 @@
+version: 2
+
+exposures:
+  - name: exec_kpi_dashboard
+    label: Executive KPI Dashboard
+    type: dashboard
+    maturity: medium
+    url: https://bi.example.com/dashboards/executive-kpi
+    description: |
+      Executive dashboard for tenant-level monthly business health across
+      finance, HR, and marketing metrics.
+    owner:
+      name: Data Platform Team
+      email: data-platform@example.com
+    depends_on:
+      - ref('kpi_executive_scorecard')
+      - ref('semantic_business_metrics')
+
+  - name: finance_monthly_report
+    label: Finance Monthly Report
+    type: analysis
+    maturity: medium
+    url: https://bi.example.com/reports/finance-monthly
+    description: |
+      Monthly finance report for revenue growth, customer value, and trend analysis.
+    owner:
+      name: Finance Analytics
+      email: finance-analytics@example.com
+    depends_on:
+      - ref('kpi_finance_monthly')
+
+  - name: hr_workforce_report
+    label: HR Workforce Report
+    type: analysis
+    maturity: medium
+    url: https://bi.example.com/reports/hr-workforce
+    description: |
+      Workforce report showing headcount, salary, and performance distributions.
+    owner:
+      name: HR Analytics
+      email: hr-analytics@example.com
+    depends_on:
+      - ref('kpi_hr_workforce')
+
+  - name: marketing_channel_dashboard
+    label: Marketing Channel Dashboard
+    type: dashboard
+    maturity: medium
+    url: https://bi.example.com/dashboards/marketing-channel
+    description: |
+      Marketing performance dashboard with budget and campaign activity by channel.
+    owner:
+      name: Marketing Analytics
+      email: marketing-analytics@example.com
+    depends_on:
+      - ref('kpi_marketing_channel')

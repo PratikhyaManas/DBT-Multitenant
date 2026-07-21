@@ -11,6 +11,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  contract-gate:
+    name: Contract Gate (PR)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python + Cache
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install & deps
+        run: |
+          pip install dbt-core dbt-bigquery dbt-snowflake dbt-databricks
+          dbt deps --profiles-dir profiles
+
+      - name: Contract Build Gate
+        run: >-
+          dbt build --profiles-dir profiles --target dev_databricks --vars "{\"tenant_name\": \"tenant_a\"}" --select kpi_executive_scorecard semantic_business_metrics
+
   dbt-matrix:
     runs-on: ubuntu-latest
     strategy:
